@@ -1,16 +1,34 @@
 package main
 
 import (
-  "fmt"
-  "html"
-  "log"
-  "net/http"
+	"log"
+	"net"
+
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+	pb "github.com/disc99/uuid-service/helloworld"
 )
 
-func main() {
-  http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-      fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
-  })
+const (
+	port = ":50051"
+)
 
-  log.Fatal(http.ListenAndServe(":8080", nil))
+// server is used to implement helloworld.GreeterServer.
+type server struct{}
+
+// SayHello implements helloworld.GreeterServer
+func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+	return &pb.HelloReply{Message: "Hello " + in.Name}, nil
+}
+
+func main() {
+	lis, err := net.Listen("tcp", port)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	s := grpc.NewServer()
+	pb.RegisterGreeterServer(s, &server{})
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
 }
