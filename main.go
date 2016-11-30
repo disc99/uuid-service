@@ -4,9 +4,9 @@ import (
 	"log"
 	"net"
 
+	pb "github.com/disc99/uuid-service/main"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	pb "github.com/disc99/uuid-service/helloworld"
 )
 
 const (
