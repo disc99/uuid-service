@@ -5,9 +5,9 @@ import (
     "io"
     "log"
  
-    pb "./proto"
     "golang.org/x/net/context"
     "google.golang.org/grpc"
+    pb "./mbox"
 )
  
 func main() {
