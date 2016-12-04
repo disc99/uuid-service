@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package uuid;
+option java_package = "io.disc99.uuid";
+
+service UuidGenerator {
+    rpc Generate (UuidRequest) returns (UuidResponse);
+} 
+
+message UuidRequest {
+    string key = 1;
+}
+
+message UuidResponse {
+    string uuid = 1;
+}
