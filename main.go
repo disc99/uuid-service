@@ -24,17 +24,18 @@ func (service *Service) Generate(ctx context.Context, req *pb.UuidRequest) (*pb.
 	}
 	log.Println("Generate UUID: " + uuid)
 
-	// TODO Pool check
+	// Pool check
 	ids, existKey := service.pool[req.Key]
-	if !existKey {
-		if ids == nil {
-			ids = map[string]string{}
-		}
-		_, exist := ids[uuid]
-		if !exist {
-			ids[uuid] = ""
-			return &pb.UuidResponse{Uuid: uuid}, nil
-		}
+	if !existKey && ids == nil {
+		ids = map[string]string{}
+	}
+	_, exist := ids[uuid]
+	log.Println(ids)
+	if !exist {
+		ids[uuid] = ""
+		service.pool[req.Key] = ids
+		log.Println(ids)
+		return &pb.UuidResponse{Uuid: uuid}, nil
 	}
 
 	// Re Generate UUID
@@ -44,17 +45,16 @@ func (service *Service) Generate(ctx context.Context, req *pb.UuidRequest) (*pb.
 	}
 	log.Println("Re Generate UUID: " + uuid)
 
-	// TODO Re pool check
+	// Re pool check
 	ids, existKey = service.pool[req.Key]
-	if !existKey {
-		if ids == nil {
-			ids = map[string]string{}
-		}
-		_, exist := ids[uuid]
-		if !exist {
-			ids[uuid] = ""
-			return &pb.UuidResponse{Uuid: uuid}, nil
-		}
+	if !existKey && ids == nil {
+		ids = map[string]string{}
+	}
+	_, exist = ids[uuid]
+	if !exist {
+		ids[uuid] = ""
+		service.pool[req.Key] = ids
+		return &pb.UuidResponse{Uuid: uuid}, nil
 	}
 	return nil, err
 }
