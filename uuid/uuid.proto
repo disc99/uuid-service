@@ -3,8 +3,15 @@ syntax = "proto3";
 package uuid;
 option java_package = "io.disc99.uuid";
 
+import "google/api/annotations.proto";
+
 service UuidGenerator {
-    rpc Generate (UuidRequest) returns (UuidResponse);
+    rpc Generate (UuidRequest) returns (UuidResponse) {
+        option (google.api.http) = {
+            post: "/v1/uuid"
+            body: "*"
+        };
+    }
 } 
 
 message UuidRequest {
